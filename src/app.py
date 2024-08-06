@@ -1,13 +1,13 @@
 from flask import Flask
-from routes.executeCode import executeCode
+from routes.submission import submission
 
 app = Flask(__name__)
 
-app.register_blueprint(executeCode, url_prefix='/executeCode')
+app.register_blueprint(submission, url_prefix='/submission')
 
-@app.route('/')
+@app.route('/actuator/health')
 def hello_world():
-    return "Hello World5"
+    return "{STATUS: 'UP'}"
 
 if __name__ == "__main__":
-    app.run(debug=True, port=3300)
+    app.run(debug=True, port=4401)
