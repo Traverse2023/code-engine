@@ -1,5 +1,4 @@
-from flask import jsonify
-import os
+from flask import jsonify, json
 import boto3
 import uuid
 
@@ -8,8 +7,7 @@ import uuid
 # dynamodb = boto3.resource('dynamodb', region_name='us-east-1', endpoint_url=dynamodb_endpoint)
 
 dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
-
-batch_client = boto3.client('batch')
+lambdaClient = boto3.client('lambda', region_name='us-east-1')
 
 table = dynamodb.Table('code-submissions')
 
@@ -26,20 +24,14 @@ def processRun(codeSubmissionReq):
     if response['ResponseMetadata']['HTTPStatusCode'] != 200:
         return "Saving submission to dynamo failed"
 
-    response = batch_client.submit_job(
-        jobName="code-submission-job",
-        jobQueue="code-submission-queue",
-        jobDefinition="code-submission-job",
-        containerOverrides={
-            'environment': [
-                {'name': 'LANGUAGE', 'value': codeSubmissionReq.language},
-                {'name': 'code', 'value': codeSubmissionReq.code}
-            ]
-        }
+    response = lambdaClient.invoke(
+        FunctionName="python-submission-ecr",
+        InvocationType='RequestResponse',
+        Payload=json.dumps(codeSubmissionReq.to_dict())
     )
 
-    job_id = response['jobId']
+    response_payload = json.loads(response['Payload'].read().decode('utf-8'))
 
-    print("jobid", job_id)
-    print(job_id)
-    return jsonify({"jobId": job_id})
+    print("response_payload", response_payload)
+
+    return jsonify({"response_payload": response_payload})
