@@ -105,11 +105,11 @@
 			<version>5.1.0</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<version>20231013</version>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.json</groupId>-->
+<!--			<artifactId>json</artifactId>-->
+<!--			<version>20231013</version>-->
+<!--		</dependency>-->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
@@ -166,42 +166,46 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.10</version>
-				<configuration>
-					<rules>
-						<rule>
-							<element>BUNDLE</element>
-							<limits>
-								<limit>
-									<counter>LINE</counter>
-									<value>COVEREDRATIO</value>
-									<!--							Code coverage percentage requirement-->
-									<minimum>0.70</minimum>
-								</limit>
-							</limits>
-						</rule>
-					</rules>
-				</configuration>
+                <configuration>
+                    <excludes>
+                        <exclude>com/codehive/codeengine/CodeEngineApplication.class</exclude>
+                    </excludes>
+                </configuration>
 				<executions>
-					<!--					<execution>-->
-					<!--						<id>default-prepare-agent</id>-->
-					<!--						<goals>-->
-					<!--							<goal>prepare-agent</goal>-->
-					<!--						</goals>-->
-					<!--					</execution>-->
-					<!--					<execution>-->
-					<!--						<id>default-report</id>-->
-					<!--						<goals>-->
-					<!--							<goal>report</goal>-->
-					<!--						</goals>-->
-					<!--					</execution>-->
-					<!--					<execution>-->
-					<!--						<id>default-check</id>-->
-					<!--&lt;!&ndash;Fail build during this phase if code test coverage does not meet configuration requirements&ndash;&gt;-->
-					<!--&lt;!&ndash;						<phase>validate</phase>&ndash;&gt;-->
-					<!--						<goals>-->
-					<!--							<goal>check</goal>-->
-					<!--						</goals>-->
-					<!--					</execution>-->
+                    <execution>
+                        <id>default-prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>default-check</id>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <rule>
+                                    <element>PACKAGE</element>
+                                    <limits>
+                                        <limit>
+                                            <counter>LINE</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <!--Code coverage percentage requirement-->
+                                            <minimum>0.90</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
+                        </configuration>
+                    </execution>
 				</executions>
 			</plugin>
 
